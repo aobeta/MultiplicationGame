@@ -7,6 +7,7 @@ using UnityEngine.UI;
 public class QuestionBoardController : MonoBehaviour {
 
     private GameController gameController;
+    private MainGameController mainGameController;
 
     private int value1;
     private int value2;
@@ -54,6 +55,11 @@ public class QuestionBoardController : MonoBehaviour {
         gameController = controlla;
     }
 
+    public void setMainGameController(MainGameController controlla)
+    {
+        mainGameController = controlla;
+    }
+
     private void setButtonClickListeners()
     {
         bt0.GetComponent<Button>().onClick.AddListener(() => { setAnswerStringFromButton(bt0);  });
@@ -67,7 +73,16 @@ public class QuestionBoardController : MonoBehaviour {
         bt8.GetComponent<Button>().onClick.AddListener(() => { setAnswerStringFromButton(bt8);  });
         bt9.GetComponent<Button>().onClick.AddListener(() => { setAnswerStringFromButton(bt9);  });
 
-        enterButton.GetComponent<Button>().onClick.AddListener(() => { checkAnswer();  });
+        enterButton.GetComponent<Button>().onClick.AddListener(() => {
+            if(gameController != null)
+            {
+                checkAnswer();
+            }
+            else
+            {
+                checkAnswer_Main();
+            }
+        });
     }
 
     private void setAnswerStringFromButton(Button btn)
@@ -86,6 +101,19 @@ public class QuestionBoardController : MonoBehaviour {
         else
         {
             gameController.gameOver("The Correct Answer is " + correctAnswer);
+        }
+    }
+
+    private void checkAnswer_Main()
+    {
+        int userAnswer = Int32.Parse(answerString);
+        if (userAnswer.Equals(correctAnswer))
+        {
+            refreshQuestionAndAnswer();
+        }
+        else
+        {
+            mainGameController.gameOver();
         }
     }
 

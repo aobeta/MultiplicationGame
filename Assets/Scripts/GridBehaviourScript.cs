@@ -38,7 +38,7 @@ public class GridBehaviourScript : MonoBehaviour {
     IEnumerator ExecuteAfterTime(float time)
     {
         yield return new WaitForSeconds(time);
-        gameController.gameOver();
+        gameController.gameOver("You have won game");
     }
 
 }
