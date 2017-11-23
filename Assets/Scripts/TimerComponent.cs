@@ -5,7 +5,7 @@ using UnityEngine.UI;
 
 public class TimerComponent : MonoBehaviour {
 
-    public float time = 30;
+    public float time = 60;
     public Text countdownText;
 
     private GameController gameController;

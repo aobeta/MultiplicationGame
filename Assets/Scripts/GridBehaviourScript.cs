@@ -14,15 +14,9 @@ public class GridBehaviourScript : MonoBehaviour {
     public void setSpace()
     {
         buttonText.text = assignedButtonIndex == gameController.getChosenButtonIndex()? "W" : "";
+        gameController.gameWinningText = buttonText.text;
         button.interactable = false;
-        if(buttonText.text.Equals("W"))
-        {
-            StartCoroutine(ExecuteAfterTime(1));
-        }
-        else
-        {
-            gameController.openQuestionBox();
-        }
+        gameController.openQuestionBox();
     }
 
     public void setGameController(GameController controller)
@@ -33,12 +27,6 @@ public class GridBehaviourScript : MonoBehaviour {
     public void assignButtonIndex(int index)
     {
         assignedButtonIndex = index;
-    }
-
-    IEnumerator ExecuteAfterTime(float time)
-    {
-        yield return new WaitForSeconds(time);
-        gameController.gameOver("You have won game");
     }
 
 }

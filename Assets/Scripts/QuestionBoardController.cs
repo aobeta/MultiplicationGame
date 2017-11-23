@@ -20,18 +20,10 @@ public class QuestionBoardController : MonoBehaviour {
     public Text questionText;
 
     //Buttons
-    public Button bt0;
-    public Button bt1;
-    public Button bt2;
-    public Button bt3;
-    public Button bt4;
-    public Button bt5;
-    public Button bt6;
-    public Button bt7;
-    public Button bt8;
-    public Button bt9;
+    public Button bt0, bt1,bt2,bt3,bt4,bt5,bt6,bt7,bt8,bt9;
 
-    public Button enterButton;
+    public Button enterButton, clearButton;
+    
 
     void Awake()
     {
@@ -83,11 +75,22 @@ public class QuestionBoardController : MonoBehaviour {
                 checkAnswer_Main();
             }
         });
+
+        clearButton.GetComponent<Button>().onClick.AddListener(() =>
+        {
+            if (answerString.Length > 0)
+            {
+                answerString = "";
+                setQuestionText();
+            }
+        });
     }
 
     private void setAnswerStringFromButton(Button btn)
     {
-        answerString = answerString + btn.GetComponentInChildren<Text>().text;
+        Debug.Log(btn.GetComponentInChildren<Text>().text);
+        answerString = string.Concat(answerString,btn.GetComponentInChildren<Text>().text.Trim());
+        Debug.Log(answerString);
         setQuestionText();
     }
 

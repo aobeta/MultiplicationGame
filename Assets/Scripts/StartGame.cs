@@ -7,11 +7,16 @@ public class StartGame : MonoBehaviour {
 
 	public void loadGameScene()
     {
-        SceneManager.LoadScene(1);
+        SceneManager.LoadScene(2);
     }
 
     public void loadQuestScene()
     {
-        SceneManager.LoadScene(2);
+        SceneManager.LoadScene(1);
+    }
+
+    public void loadTutorialScene()
+    {
+        SceneManager.LoadScene(3);
     }
 }

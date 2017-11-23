@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
+using UnityEngine.Analytics;
 
 public class GameController : MonoBehaviour {
 
@@ -18,6 +19,7 @@ public class GameController : MonoBehaviour {
     public GameObject questionBoardComponent;
 
     public Text timer;
+    public string gameWinningText;
 
     void Awake()
     {
@@ -53,6 +55,15 @@ public class GameController : MonoBehaviour {
     public void closeQuestionBox()
     {
         questionBoardPanel.SetActive(false);
+        evaluateCurrentButton();
+    }
+
+    public void evaluateCurrentButton()
+    {
+        if (gameWinningText.Equals("W"))
+        {
+            StartCoroutine(ExecuteAfterTime(1));
+        }
     }
 
     public void gameOver(string optionalMessage)
@@ -64,6 +75,7 @@ public class GameController : MonoBehaviour {
             gameOverPanel.GetComponentInChildren<Text>().text = optionalMessage;
         }
         gameDone = true;
+        Analytics.CustomEvent("game Over EXT");
     }
 
     public void gameOver()
@@ -71,6 +83,12 @@ public class GameController : MonoBehaviour {
         questionBoardPanel.SetActive(false);
         gameOverPanel.SetActive(true);
         gameDone = true;
+    }
+
+    IEnumerator ExecuteAfterTime(float time)
+    {
+        yield return new WaitForSeconds(time);
+        gameOver("You found a way to get the W!");
     }
 
 }
