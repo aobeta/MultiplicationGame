@@ -88,9 +88,7 @@ public class QuestionBoardController : MonoBehaviour {
 
     private void setAnswerStringFromButton(Button btn)
     {
-        Debug.Log(btn.GetComponentInChildren<Text>().text);
         answerString = string.Concat(answerString,btn.GetComponentInChildren<Text>().text.Trim());
-        Debug.Log(answerString);
         setQuestionText();
     }
 
