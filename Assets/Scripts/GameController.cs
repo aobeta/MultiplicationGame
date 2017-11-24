@@ -6,7 +6,11 @@ using UnityEngine.Analytics;
 
 public class GameController : MonoBehaviour {
 
-    public Text[] buttonList;
+    public Button[] buttonList;
+    public int numberOfBombs;
+    private int bombsFound;
+
+    private int[] chosenButtonIndexes;
     private int chosenButtonIndex;
     private System.Random randomGenerator = new System.Random();
     public bool gameDone;
@@ -19,7 +23,8 @@ public class GameController : MonoBehaviour {
     public GameObject questionBoardComponent;
 
     public Text timer;
-    public string gameWinningText;
+    public GameObject scoreBoard;
+    //public string gameWinningText;
 
     void Awake()
     {
@@ -27,18 +32,60 @@ public class GameController : MonoBehaviour {
         gameOverPanel.SetActive(false);
         questionBoardComponent.GetComponent<QuestionBoardController>().setGameController(this);
         questionBoardPanel.SetActive(false);
-        setGameControllerReferenceOnButtons();  
+        if (numberOfBombs == 0)
+            numberOfBombs = 1;
+        chosenButtonIndexes = new int[numberOfBombs];
+        bombsFound = numberOfBombs;
+        setScoreBoardText(numberOfBombs, bombsFound);
+        setGameControllerReferenceOnButtons();
     }
 
     void setGameControllerReferenceOnButtons()
     {
+        Debug.Log("Length of buttonList" + buttonList.Length);
         for (int i = 0; i < buttonList.Length; i++)
         {
-            buttonList[i].GetComponentInParent<GridBehaviourScript>().setGameController(this);
-            buttonList[i].GetComponentInParent<GridBehaviourScript>().assignButtonIndex(i);
+            buttonList[i].GetComponent<GridBehaviourScript>().setGameController(this);
+            buttonList[i].GetComponent<GridBehaviourScript>().assignButtonIndex(i);
         }
         timer.GetComponent<TimerComponent>().setGameController(this);
-        chosenButtonIndex = randomGenerator.Next(buttonList.Length + 1);
+        for(int i =0; i < chosenButtonIndexes.Length; i++)
+        {
+            int newRandomIndex = randomGenerator.Next(buttonList.Length + 1);
+            bool buttonSet = false;
+            if(buttonList[newRandomIndex].GetComponent<GridBehaviourScript>().getSecretButtonText() != "W")
+            {
+                Debug.Log("W set at random index : " + newRandomIndex);
+                buttonList[newRandomIndex].GetComponent<GridBehaviourScript>().setSecretButtonText("W");
+                buttonSet = true;
+            }
+            else
+            {
+                while (!buttonSet)
+                {
+                    newRandomIndex = randomGenerator.Next(buttonList.Length + 1);
+                    if(buttonList[newRandomIndex].GetComponent<GridBehaviourScript>().getSecretButtonText() != "W")
+                    {
+                        Debug.Log("W set at random index : " + newRandomIndex);
+                        buttonList[newRandomIndex].GetComponent<GridBehaviourScript>().setSecretButtonText("W");
+                        buttonSet = true;
+                    }
+                }
+            }
+        }
+    }
+
+    public void recordBombsFound()
+    {
+        bombsFound--;
+        Debug.Log("Bombs found? " + bombsFound);
+        setScoreBoardText(numberOfBombs, bombsFound);
+    }
+
+    public void setScoreBoardText(int denominator, int numerator)
+    {
+        int found = denominator - numerator;
+        scoreBoard.GetComponentInChildren<Text>().text = found.ToString() + " of " + denominator.ToString() + " found";
     }
 
     public int getChosenButtonIndex()
@@ -60,7 +107,7 @@ public class GameController : MonoBehaviour {
 
     public void evaluateCurrentButton()
     {
-        if (gameWinningText.Equals("W"))
+        if (bombsFound == 0)
         {
             StartCoroutine(ExecuteAfterTime(1));
         }
