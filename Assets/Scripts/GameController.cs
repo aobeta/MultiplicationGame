@@ -135,7 +135,7 @@ public class GameController : MonoBehaviour {
     IEnumerator ExecuteAfterTime(float time)
     {
         yield return new WaitForSeconds(time);
-        gameOver("You found a way to get the W!");
+        gameOver("You Found All The Bombs!");
     }
 
 }
