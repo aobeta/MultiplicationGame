@@ -1,4 +1,5 @@
-﻿using System.Collections;
+﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
@@ -8,7 +9,7 @@ public class GameController : MonoBehaviour {
 
     public Button[] buttonList;
     public int numberOfBombs;
-    private int bombsFound;
+    private int bombsToBeFound;
 
     private int[] chosenButtonIndexes;
     private int chosenButtonIndex;
@@ -24,7 +25,14 @@ public class GameController : MonoBehaviour {
 
     public Text timer;
     public GameObject scoreBoard;
-    //public string gameWinningText;
+
+    public GameObject starsPanel;
+    public Sprite oneStars;
+    public Sprite twoStars;
+    public Sprite threeStars;
+    public Sprite zeroStars;
+
+    public Button nextLevel;
 
     void Awake()
     {
@@ -35,8 +43,8 @@ public class GameController : MonoBehaviour {
         if (numberOfBombs == 0)
             numberOfBombs = 1;
         chosenButtonIndexes = new int[numberOfBombs];
-        bombsFound = numberOfBombs;
-        setScoreBoardText(numberOfBombs, bombsFound);
+        bombsToBeFound = numberOfBombs;
+        setScoreBoardText(numberOfBombs,bombsToBeFound);
         setGameControllerReferenceOnButtons();
     }
 
@@ -77,9 +85,8 @@ public class GameController : MonoBehaviour {
 
     public void recordBombsFound()
     {
-        bombsFound--;
-        Debug.Log("Bombs found? " + bombsFound);
-        setScoreBoardText(numberOfBombs, bombsFound);
+        bombsToBeFound--;
+        setScoreBoardText(numberOfBombs,bombsToBeFound);
     }
 
     public void setScoreBoardText(int denominator, int numerator)
@@ -107,14 +114,18 @@ public class GameController : MonoBehaviour {
 
     public void evaluateCurrentButton()
     {
-        if (bombsFound == 0)
+        if (bombsToBeFound == 0)
         {
             StartCoroutine(ExecuteAfterTime(1));
+            gameOver("All Bombs Found!");
         }
     }
 
     public void gameOver(string optionalMessage)
     {
+        if (gameDone)
+            return;
+
         questionBoardPanel.SetActive(false);
         gameOverPanel.SetActive(true);
         if(optionalMessage != null)
@@ -122,20 +133,58 @@ public class GameController : MonoBehaviour {
             gameOverPanel.GetComponentInChildren<Text>().text = optionalMessage;
         }
         gameDone = true;
-        Analytics.CustomEvent("game Over EXT");
+        determineStars();
+
+        if(bombsToBeFound != 0 && nextLevel != null)
+        {
+            nextLevel.interactable = false;
+        }
+    }
+
+    public void determineStars()
+    {
+        int time = Int32.Parse(timer.text.Trim());
+        if(bombsToBeFound > 0)
+        {
+            starsPanel.GetComponent<Image>().sprite = zeroStars;
+        }
+        else if(time >= 40)
+        {
+            starsPanel.GetComponent<Image>().sprite = threeStars;
+        }
+        else if(time >= 20)
+        {
+            starsPanel.GetComponent<Image>().sprite = twoStars;
+        }
+        else if(time >= 5)
+        {
+            starsPanel.GetComponent<Image>().sprite = oneStars;
+        }
+        else
+        {
+            starsPanel.GetComponent<Image>().sprite = zeroStars;
+        }
     }
 
     public void gameOver()
     {
+        if (gameDone)
+            return;
         questionBoardPanel.SetActive(false);
         gameOverPanel.SetActive(true);
         gameDone = true;
+        determineStars();
+
+        if (bombsToBeFound != 0 && nextLevel != null)
+        {
+            nextLevel.interactable = false;
+        }
     }
 
     IEnumerator ExecuteAfterTime(float time)
     {
+        Debug.Log("execute after time called");
         yield return new WaitForSeconds(time);
-        gameOver("You Found All The Bombs!");
     }
 
 }

@@ -34,12 +34,39 @@ public class QuestionBoardController : MonoBehaviour {
 
     public void refreshQuestionAndAnswer()
     {
-        value1 = randomGenerator.Next(1, 13);
-        value2 = randomGenerator.Next(1, 13);
-        correctAnswer = value1 * value2;
-        question = value1 + " x " + value2 + " = ?";
-        questionText.text = question;
-        answerString = "";
+        string difficulty = PlayerPrefs.GetString("difficulty");
+        if (difficulty == null)
+            difficulty = "medium";
+
+        if (difficulty.Equals("easy"))
+        {
+            value1 = randomGenerator.Next(1, 5);
+            value2 = randomGenerator.Next(1, 8);
+            correctAnswer = value1 * value2;
+            question = value1 + " x " + value2 + " = ?";
+            questionText.text = question;
+            answerString = "";
+        }
+
+        if (difficulty.Equals("medium"))
+        {
+            value1 = randomGenerator.Next(5, 9);
+            value2 = randomGenerator.Next(1, 11);
+            correctAnswer = value1 * value2;
+            question = value1 + " x " + value2 + " = ?";
+            questionText.text = question;
+            answerString = "";
+        }
+
+        if (difficulty.Equals("hard"))
+        {
+            value1 = randomGenerator.Next(9, 13);
+            value2 = randomGenerator.Next(1, 13);
+            correctAnswer = value1 * value2;
+            question = value1 + " x " + value2 + " = ?";
+            questionText.text = question;
+            answerString = "";
+        }
     }
 
     public void setGameController(GameController controlla)
