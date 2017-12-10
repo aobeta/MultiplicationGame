@@ -59,7 +59,7 @@ public class GameController : MonoBehaviour {
         timer.GetComponent<TimerComponent>().setGameController(this);
         for(int i =0; i < chosenButtonIndexes.Length; i++)
         {
-            int newRandomIndex = randomGenerator.Next(buttonList.Length + 1);
+            int newRandomIndex = randomGenerator.Next(buttonList.Length);
             bool buttonSet = false;
             if(buttonList[newRandomIndex].GetComponent<GridBehaviourScript>().getSecretButtonText() != "W")
             {
@@ -71,7 +71,7 @@ public class GameController : MonoBehaviour {
             {
                 while (!buttonSet)
                 {
-                    newRandomIndex = randomGenerator.Next(buttonList.Length + 1);
+                    newRandomIndex = randomGenerator.Next(buttonList.Length);
                     if(buttonList[newRandomIndex].GetComponent<GridBehaviourScript>().getSecretButtonText() != "W")
                     {
                         Debug.Log("W set at random index : " + newRandomIndex);

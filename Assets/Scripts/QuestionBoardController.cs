@@ -61,9 +61,19 @@ public class QuestionBoardController : MonoBehaviour {
         if (difficulty.Equals("hard"))
         {
             value1 = randomGenerator.Next(9, 13);
-            value2 = randomGenerator.Next(1, 13);
+            value2 = randomGenerator.Next(6, 13);
             correctAnswer = value1 * value2;
             question = value1 + " x " + value2 + " = ?";
+            questionText.text = question;
+            answerString = "";
+        }
+
+        if (difficulty.Equals("challenger"))
+        {
+            value1 = randomGenerator.Next(9, 13);
+            value2 = randomGenerator.Next(1, 13);
+            correctAnswer = value1 * value2;
+            question = value1 + " x  ? = " + correctAnswer;
             questionText.text = question;
             answerString = "";
         }
@@ -121,6 +131,22 @@ public class QuestionBoardController : MonoBehaviour {
 
     private void checkAnswer()
     {
+        string difficulty = PlayerPrefs.GetString("difficulty");
+        if (difficulty.Equals("challenger"))
+        {
+            int answer = Int32.Parse(answerString);
+            if (answer.Equals(value2))
+            {
+                gameController.closeQuestionBox();
+            }
+            else
+            {
+                gameController.gameOver("The Correct Answer is " + correctAnswer);
+            }
+            return;
+        }
+
+        //non challenger mode answer evaluation
         int userAnswer = Int32.Parse(answerString);
         if (userAnswer.Equals(correctAnswer))
         {
@@ -147,8 +173,17 @@ public class QuestionBoardController : MonoBehaviour {
 
     private void setQuestionText()
     {
-        question = value1 + " x " + value2 + " = " + answerString;
-        questionText.text = question;
+        string difficulty = PlayerPrefs.GetString("difficulty");
+        if (difficulty.Equals("challenger"))
+        {
+            question = value1 + " x " + answerString + " = " + correctAnswer;
+            questionText.text = question;
+        }
+        else
+        {
+            question = value1 + " x " + value2 + " = " + answerString;
+            questionText.text = question;
+        }
     }
 
     IEnumerator ExecuteAfterTime(float time)

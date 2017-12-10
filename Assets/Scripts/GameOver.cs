@@ -25,4 +25,9 @@ public class GameOver : MonoBehaviour {
         PlayerPrefs.SetInt("currentLevel", level + 4);
         SceneManager.LoadScene(level + 4);
     }
+
+    public void endGame()
+    {
+        Application.Quit();
+    }
 }
